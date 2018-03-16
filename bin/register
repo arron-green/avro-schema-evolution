@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -e
+AVRO_SCHEMA_PATH="${1}"
+SUBJECT="${2}"
+SCHEMA_REGISTRY_HOST_AND_PORT="${3-http://localhost:8081}"
+
+echoerr() { printf "%s\n" "$*" >&2; }
+
+[[ "$#" -lt "2" ]] && (echoerr "Usage: $0 [avro-schema-path] [schema-subject-name] [schema-registry-host-and-port]"; exit 1;)
+[[ -e "${AVRO_SCHEMA_PATH}" ]] || (echoerr "Avro schema path '${AVRO_SCHEMA_PATH}' does not exist"; exit 1;)
+AVRO_SCHEMA_FILE="$(basename ${AVRO_SCHEMA_PATH} | tr '[:upper:]' '[:lower:]')"
+[[ "${AVRO_SCHEMA_FILE##*.}" == "avsc" ]] || (echoerr "avro schema file must have an avsc extension"; exit 1;)
+AVRO_SCHEMA_DATA=$(jq -rc '.' $AVRO_SCHEMA_PATH) || (echoerr "avro schema contains invalid json"; exit 1;)
+
+PAYLOAD="$(jq -n --arg schema "$AVRO_SCHEMA_DATA" '{schema: $schema}')"
+curl --silent \
+    -X POST \
+    -H "Accept: application/vnd.schemaregistry.v1+json" \
+    -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+    --data "$PAYLOAD" \
+    "${SCHEMA_REGISTRY_HOST_AND_PORT}/subjects/$SUBJECT/versions"
