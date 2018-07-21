@@ -24,6 +24,20 @@ zookeeper is [UP]
 
 Ensure [jq](https://stedolan.github.io/jq/download/) is installed and available within your `PATH`
 
+### example setting schema subject compatibility
+
+```bash
+bin/compatibility-set FULL_TRANSITIVE test http://localhost:8081
+# {"compatibility":"FULL_TRANSITIVE"}
+```
+
+### example getting schema subject compatibility
+
+```bash
+bin/compatibility-get test http://localhost:8081
+# {"compatibilityLevel":"FULL_TRANSITIVE"}
+
+```
 ### example registration
 
 ```bash

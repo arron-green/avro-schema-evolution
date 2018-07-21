@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -e
+SUBJECT="${1}"
+SCHEMA_REGISTRY_HOST_AND_PORT="${2-http://localhost:8081}"
+
+echoerr() { printf "%s\n" "$*" >&2; }
+
+[[ "$#" -lt "1" ]] && (echoerr "Usage: $0 [schema-subject-name] [schema-registry-host-and-port]"; exit 1;)
+
+curl --silent \
+    -X GET \
+    -H "Content-Type: application/json" \
+    "${SCHEMA_REGISTRY_HOST_AND_PORT}/config/$SUBJECT"
