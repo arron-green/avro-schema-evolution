@@ -1,0 +1,10 @@
+{
+  "name": "Person",
+  "type": "record",
+  "namespace": "we.avro",
+  "doc": "Testing Fwd/Bwd compat",
+  "fields": [
+    { "name": "first_name", "type": "string", "doc": "no default value" },
+    { "name": "last_name", "type": "string", "default": "", "doc": "with a default value" }
+  ]
+}
